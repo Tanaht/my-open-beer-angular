@@ -615,8 +615,10 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 	}).when('/beers/update', {
 		templateUrl: 'templates/beers/beerForm.html',
 		controller: 'BeerUpdateController'
+	}).when('/404', {
+		templateUrl: 'templates/error/error404.html'
 	}).otherwise({
-		redirectTo: '/'
+		redirectTo: '/404'
 	});
 	if(window.history && window.history.pushState){
 		$locationProvider.html5Mode(true);
