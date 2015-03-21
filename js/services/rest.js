@@ -53,7 +53,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.put=function(id,response,what,name,callback){
-		console.log(id + " " + response + " " + what + " " + name + " " + callback);
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -65,7 +64,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 			headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
-			console.log(data);
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);

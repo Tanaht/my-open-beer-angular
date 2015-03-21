@@ -55,8 +55,4 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 		}
 		return result;
 	};
-
-	$scope.test = function(){
-		console.log($scope.localData.breweries);
-	}
 }
