@@ -25,9 +25,9 @@ module.exports=function($scope,config,$location,rest, modalService) {
 
 	$scope.showBeers = function(){
 		var listShowBeers = "";
-		var title = "Liste des bières de " + config.activeBrewery.name;
+		var title = "Liste des bières";
 		for(i = 0 ; i<$scope.countBeers() ; i++){
-			listShowBeers = listShowBeers + "<beer id='" + $scope.data[what][i].id + "' name='" + $scope.data[what][i].name + "'></beer><hr/>";
+			listShowBeers = listShowBeers + "<p>" + $scope.data[what][i].name + "</p><hr/>";
 		}
 		modalService.showModal(title, listShowBeers, undefined);
 	}
