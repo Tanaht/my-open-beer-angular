@@ -8,6 +8,7 @@ filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
 directive("sortBy", [require("./addons/sortBy")]).
 directive("Drag",require("./addons/drag")).
 directive("bsModal",["$q",require("./addons/modal")]).
+directive("beer",["$location", require("./addons/beer")]).
 service("modalService",["$q","$compile","$rootScope","$sce",require("./addons/modalService")]).
 run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $routeParams) {
 	$rootScope.$on('$routeChangeSuccess', function(e, current, pre) {

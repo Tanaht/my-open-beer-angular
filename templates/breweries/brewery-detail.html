@@ -3,7 +3,7 @@
   <div class="panel-body">
     <div class="row">
     	<div class="col-sm-2">
-    		<img class="img-rounded" ng-src="activeBrewery.url"/>
+    		<img width="150px" height="150px" class="img-rounded" ng-src="{{'img/' + activeBrewery.photo}}"/>
     	</div>
     	<div class="col-sm-9 col-sm-offset-1">
     		<p class="form-control">{{activeBrewery.name}}</p>
@@ -16,7 +16,10 @@
 			      <p class="form-control">{{activeBrewery.updated_at}}</p>
 			  </div><!-- /.col-sm-6 -->
 			</div><!-- /.row -->
+			<button class="btn btn-default" ng-show="countBeers() > 0" ng-click="showBeers()">{{"Voir les bières (" + countBeers() + ")"}}</button>
     	</div>
     </div>
   </div>
 </div>
+<beer id="1" name="test"></beer>
+<button class="btn btn-default" ng-click="showBreweries()"><span class="glyphicon glyphicon-arrow-left"></span> Retour à la liste des basseries</button>
