@@ -1,0 +1,22 @@
+<div class="panel panel-default">
+  <div class="panel-heading">{{activeBrewery.name}}</div>
+  <div class="panel-body">
+    <div class="row">
+    	<div class="col-sm-2">
+    		<img class="img-rounded" ng-src="activeBrewery.url"/>
+    	</div>
+    	<div class="col-sm-9 col-sm-offset-1">
+    		<p class="form-control">{{activeBrewery.name}}</p>
+    		<p class="form-control">{{activeBrewery.url}}</p>
+		   <div class="row">
+			  <div class="col-sm-6">
+			      <p class="form-control">{{activeBrewery.created_at}}</p>
+			  </div><!-- /.col-sm-6 -->
+			  <div class="col-sm-6">
+			      <p class="form-control">{{activeBrewery.updated_at}}</p>
+			  </div><!-- /.col-sm-6 -->
+			</div><!-- /.row -->
+    	</div>
+    </div>
+  </div>
+</div>

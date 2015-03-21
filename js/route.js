@@ -20,6 +20,9 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 	}).when('/breweries/update', {
 		templateUrl: 'templates/breweries/breweryForm.html',
 		controller: 'BreweryUpdateController'
+	}).when('/breweries/detail', {
+		templateUrl: 'templates/breweries/brewery-detail.html',
+		controller: 'BreweryShowController'
 	}).when('/saves', {
 		templateUrl: 'templates/saveMain.html',
 		controller: 'SaveController'
@@ -38,6 +41,9 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 	}).when('/beers/update', {
 		templateUrl: 'templates/beers/beerForm.html',
 		controller: 'BeerUpdateController'
+	}).when('/beers/detail', {
+		templateUrl: 'templates/beers/beer-detail.html',
+		controller: 'BeerShowController'
 	}).when('/404', {
 		templateUrl: 'templates/error/error404.html'
 	}).otherwise({
