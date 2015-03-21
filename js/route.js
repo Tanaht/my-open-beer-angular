@@ -7,8 +7,7 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 		templateUrl: 'templates/main.html',
 		controller: 'MainController'
 	}).when('/home', {
-		templateUrl: 'templates/main.html',
-		controller: 'MainController'
+		redirectTo : "/"
 	}).when('/breweries', {
 		templateUrl: 'templates/breweries/main.html',
 		controller: 'BreweriesController'

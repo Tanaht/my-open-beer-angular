@@ -142,7 +142,7 @@ controller("MainController", ["$scope","$location","save","$window",require("./m
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
 service("save", ["rest","config","$route",require("./services/save")]).
-config(["$routeProvider","$locationProvider","$httpProvider",require("./config")]).
+config(["$routeProvider","$locationProvider","$httpProvider",require("./route")]).
 filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
 directive("sortBy", [require("./addons/sortBy")]).
 directive("Drag",require("./addons/drag")).
@@ -171,7 +171,7 @@ run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $
 }]
 ).factory("config", require("./config/configFactory"));
 
-},{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":10,"./breweries/breweriesModule":12,"./config":15,"./config/configFactory":17,"./config/configModule":18,"./mainController":19,"./save/saveController":20,"./services/rest":21,"./services/save":22}],7:[function(require,module,exports){
+},{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":10,"./breweries/breweriesModule":12,"./config/configFactory":16,"./config/configModule":17,"./mainController":18,"./route":19,"./save/saveController":20,"./services/rest":21,"./services/save":22}],7:[function(require,module,exports){
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
 	$scope.data={};
 	$scope.localData = {};//data à ne pas mettre a jour
@@ -638,6 +638,70 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 	}
 };
 },{}],15:[function(require,module,exports){
+module.exports=function($scope,config,$location){
+
+	$scope.config=angular.copy(config);
+	
+	$scope.setFormScope=function(form){
+		$scope.frmConfig=form;
+	};
+	
+	$scope.update=function(){
+		if($scope.frmConfig.$dirty){
+			config.server=$scope.config.server;
+			config.breweries=$scope.config.breweries;
+			config.beers=$scope.config.beers;
+		}
+		$location.path("/");
+	};
+	$scope.cancel=function(){
+		$location.path("/");
+	};
+};
+},{}],16:[function(require,module,exports){
+module.exports=function() {
+	var factory={breweries:{}, beers:{},server:{}};
+	factory.activeBrewery=undefined;
+	factory.breweries.loaded=false;
+	factory.breweries.refresh="all";//all|ask
+	factory.breweries.update="immediate";//deffered|immediate
+	factory.activeBeer=undefined;
+	factory.beers.loaded=false;
+	factory.beers.refresh="all";//all|ask
+	factory.beers.update="immediate";//deffered|immediate
+	factory.server.privateToken="";
+	factory.server.restServerUrl="http://127.0.0.1/dev/rest-open-beer/";
+	factory.server.force=true;
+	return factory;
+};
+},{}],17:[function(require,module,exports){
+var configApp=angular.module("ConfigApp", []).
+controller("ConfigController", ["$scope","config","$location",require("./configController")]);
+module.exports=configApp.name;
+},{"./configController":15}],18:[function(require,module,exports){
+module.exports=function($scope,$location,save,$window) {
+	
+	$scope.hasOperations=function(){
+		return save.operations.length>0;
+	};
+	
+	$scope.opCount=function(){
+		return save.operations.length;
+	};
+	$scope.buttons=[{caption:"Okay"},{caption:"Annuler",dismiss:"true"}];
+	
+	var beforeUnload=function(e) {
+		if($scope.hasOperations())
+			return "Attention, vous allez perdre les modifications("+$scope.opCount()+") non enregistrées si vous continuez...";
+	};
+	angular.element($window).on('beforeunload',beforeUnload);
+	
+	$scope.$on("$destroy", function () {
+		$window.removeEventListener('beforeunload', beforeUnload);
+	});
+	
+};
+},{}],19:[function(require,module,exports){
 module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 	//$httpProvider.defaults.useXDomain = true;
 	//$httpProvider.defaults.withCredentials = true;
@@ -647,8 +711,7 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 		templateUrl: 'templates/main.html',
 		controller: 'MainController'
 	}).when('/home', {
-		templateUrl: 'templates/main.html',
-		controller: 'MainController'
+		redirectTo : "/"
 	}).when('/breweries', {
 		templateUrl: 'templates/breweries/main.html',
 		controller: 'BreweriesController'
@@ -687,70 +750,6 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 	if(window.history && window.history.pushState){
 		$locationProvider.html5Mode(true);
 	}
-};
-},{}],16:[function(require,module,exports){
-module.exports=function($scope,config,$location){
-
-	$scope.config=angular.copy(config);
-	
-	$scope.setFormScope=function(form){
-		$scope.frmConfig=form;
-	};
-	
-	$scope.update=function(){
-		if($scope.frmConfig.$dirty){
-			config.server=$scope.config.server;
-			config.breweries=$scope.config.breweries;
-			config.beers=$scope.config.beers;
-		}
-		$location.path("/");
-	};
-	$scope.cancel=function(){
-		$location.path("/");
-	};
-};
-},{}],17:[function(require,module,exports){
-module.exports=function() {
-	var factory={breweries:{}, beers:{},server:{}};
-	factory.activeBrewery=undefined;
-	factory.breweries.loaded=false;
-	factory.breweries.refresh="all";//all|ask
-	factory.breweries.update="immediate";//deffered|immediate
-	factory.activeBeer=undefined;
-	factory.beers.loaded=false;
-	factory.beers.refresh="all";//all|ask
-	factory.beers.update="immediate";//deffered|immediate
-	factory.server.privateToken="";
-	factory.server.restServerUrl="http://127.0.0.1/dev/rest-open-beer/";
-	factory.server.force=true;
-	return factory;
-};
-},{}],18:[function(require,module,exports){
-var configApp=angular.module("ConfigApp", []).
-controller("ConfigController", ["$scope","config","$location",require("./configController")]);
-module.exports=configApp.name;
-},{"./configController":16}],19:[function(require,module,exports){
-module.exports=function($scope,$location,save,$window) {
-	
-	$scope.hasOperations=function(){
-		return save.operations.length>0;
-	};
-	
-	$scope.opCount=function(){
-		return save.operations.length;
-	};
-	$scope.buttons=[{caption:"Okay"},{caption:"Annuler",dismiss:"true"}];
-	
-	var beforeUnload=function(e) {
-		if($scope.hasOperations())
-			return "Attention, vous allez perdre les modifications("+$scope.opCount()+") non enregistrées si vous continuez...";
-	};
-	angular.element($window).on('beforeunload',beforeUnload);
-	
-	$scope.$on("$destroy", function () {
-		$window.removeEventListener('beforeunload', beforeUnload);
-	});
-	
 };
 },{}],20:[function(require,module,exports){
 module.exports=function($scope,$location,save){
@@ -848,7 +847,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.put=function(id,response,what,name,callback){
-		console.log(id + " " + response + " " + what + " " + name + " " + callback);
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -860,7 +858,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 			headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
-			console.log(data);
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);
