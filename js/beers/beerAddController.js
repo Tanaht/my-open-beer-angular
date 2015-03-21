@@ -1,10 +1,12 @@
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
 	$scope.data={};
+	$scope.localData = {};//data à ne pas mettre a jour
 	$scope.data["beers"]=config.beers.all;
 	var self=this;
 	var selfScope=$scope;
 	$scope.setFormScope=function(form){
 		$scope.frmBeer=form;
+		rest.getAll($scope.localData, "breweries");
 	};
 	var onRouteChangeOff=$scope.$on('$locationChangeStart', function routeChange(event, newUrl, oldUrl) {
 		if (!$scope.frmBeer || !$scope.frmBeer.$dirty || $scope.exit) return;
@@ -52,5 +54,9 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 			result=true;
 		}
 		return result;
+	};
+
+	$scope.test = function(){
+		console.log($scope.localData.breweries);
 	}
 }

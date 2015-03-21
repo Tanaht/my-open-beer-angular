@@ -174,11 +174,13 @@ run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $
 },{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":10,"./breweries/breweriesModule":12,"./config":15,"./config/configFactory":17,"./config/configModule":18,"./mainController":19,"./save/saveController":20,"./services/rest":21,"./services/save":22}],7:[function(require,module,exports){
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
 	$scope.data={};
+	$scope.localData = {};//data à ne pas mettre a jour
 	$scope.data["beers"]=config.beers.all;
 	var self=this;
 	var selfScope=$scope;
 	$scope.setFormScope=function(form){
 		$scope.frmBeer=form;
+		rest.getAll($scope.localData, "breweries");
 	};
 	var onRouteChangeOff=$scope.$on('$locationChangeStart', function routeChange(event, newUrl, oldUrl) {
 		if (!$scope.frmBeer || !$scope.frmBeer.$dirty || $scope.exit) return;
@@ -226,6 +228,10 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 			result=true;
 		}
 		return result;
+	};
+
+	$scope.test = function(){
+		console.log($scope.localData.breweries);
 	}
 }
 },{}],8:[function(require,module,exports){
@@ -399,7 +405,7 @@ module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
 			save.addOperation("Deleted",$scope.removeOne,beer);
 			beer.deleted=$scope.hideDeleted;
 		}
-	}
+	};
 }
 },{}],10:[function(require,module,exports){
 var appBreweries=angular.module("BeersApp", []).
