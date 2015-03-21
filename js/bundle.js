@@ -213,7 +213,9 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 		}
 		$scope.data.posted={
 			"name" : beer.name,
-			"desc"  : beer.desc
+			"description"  : beer.description,
+			"abv" : beer.abv,
+			"idBrewery" : beer.idBrewery
 		};
 		$scope.data.beers.push(beer);
 		beer.created_at=new Date();
@@ -246,14 +248,19 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 			}
 			$scope.data.posted={
 			    "name" : beer.name,
-			    "desc"  : beer.desc
+			    "description"  : beer.description,
+			    "abv" : beer.abv,
+			    "idBrewery" : beer.idBrewery
 			};
 			
 			config.activeBeer.reference.name=$scope.activeBeer.name;
-			config.activeBeer.reference.desc = $scope.activeBeer.desc;
+			config.activeBeer.reference.description = $scope.activeBeer.description;
+			config.activeBeer.reference.abv = $scope.activeBeer.abv;
+			config.activeBeer.reference.idBrewery = $scope.activeBeer.idBrewery;
 			config.activeBeer.reference.updated_at=new Date();
-			if(config.beers.update==="immediate" || force)
+			if(config.beers.update==="immediate" || force){
 				rest.put(config.activeBeer.id,$scope.data,"beers",config.activeBeer.name,callback);
+			}
 			else{
 				config.activeBeer.reference.flag="Updated";
 				save.addOperation("Updated",$scope.update,config.activeBeer.reference);
@@ -361,7 +368,9 @@ module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
 		}
 		$scope.data.posted={ "beer" : {
 		    "name" : beer.name,
-		    "desc"  : beer.desc
+		    "description"  : beer.description,
+		    "abv" : beer.abv,
+			"idBrewery" : beer.idBrewery
 		  }
 		};
 		$scope.data.beers.push(beer);
@@ -711,7 +720,7 @@ module.exports=function() {
 	factory.beers.update="immediate";//deffered|immediate
 	factory.server.privateToken="";
 	factory.server.restServerUrl="http://127.0.0.1/dev/rest-open-beer/";
-	factory.server.force=false;
+	factory.server.force=true;
 	return factory;
 };
 },{}],18:[function(require,module,exports){
@@ -837,6 +846,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.put=function(id,response,what,name,callback){
+		console.log(id + " " + response + " " + what + " " + name + " " + callback);
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -848,6 +858,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 			headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
+			console.log(data);
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);

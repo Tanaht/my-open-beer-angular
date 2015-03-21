@@ -17,14 +17,19 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 			}
 			$scope.data.posted={
 			    "name" : beer.name,
-			    "desc"  : beer.desc
+			    "description"  : beer.description,
+			    "abv" : beer.abv,
+			    "idBrewery" : beer.idBrewery
 			};
 			
 			config.activeBeer.reference.name=$scope.activeBeer.name;
-			config.activeBeer.reference.desc = $scope.activeBeer.desc;
+			config.activeBeer.reference.description = $scope.activeBeer.description;
+			config.activeBeer.reference.abv = $scope.activeBeer.abv;
+			config.activeBeer.reference.idBrewery = $scope.activeBeer.idBrewery;
 			config.activeBeer.reference.updated_at=new Date();
-			if(config.beers.update==="immediate" || force)
+			if(config.beers.update==="immediate" || force){
 				rest.put(config.activeBeer.id,$scope.data,"beers",config.activeBeer.name,callback);
+			}
 			else{
 				config.activeBeer.reference.flag="Updated";
 				save.addOperation("Updated",$scope.update,config.activeBeer.reference);

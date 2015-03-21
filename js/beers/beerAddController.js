@@ -39,7 +39,9 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 		}
 		$scope.data.posted={
 			"name" : beer.name,
-			"desc"  : beer.desc
+			"description"  : beer.description,
+			"abv" : beer.abv,
+			"idBrewery" : beer.idBrewery
 		};
 		$scope.data.beers.push(beer);
 		beer.created_at=new Date();
