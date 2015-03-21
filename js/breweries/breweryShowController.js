@@ -1,4 +1,4 @@
-module.exports=function($scope,config,$location,rest, modalService) {
+module.exports=function($scope,config,$location,rest, modalService, $document) {
 	$scope.data = {};
 	
 	if(angular.isUndefined(config.activeBrewery)){
@@ -27,8 +27,12 @@ module.exports=function($scope,config,$location,rest, modalService) {
 		var listShowBeers = "";
 		var title = "Liste des bières";
 		for(i = 0 ; i<$scope.countBeers() ; i++){
-			listShowBeers = listShowBeers + "<p>" + $scope.data[what][i].name + "</p><hr/>";
+			listShowBeers = listShowBeers + "<p class='form-control'>"+ $scope.data[what][i].name +"</p>";
 		}
-		modalService.showModal(title, listShowBeers, undefined);
+		modalService.showModal(title, listShowBeers, function(value){
+			if(value=="Enregistrer et continuer" || value == "Continuer"){
+				
+			}
+		});
 	}
 }

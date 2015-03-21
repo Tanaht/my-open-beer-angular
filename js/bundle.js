@@ -417,7 +417,7 @@ var appBreweries=angular.module("BeersApp", []).
 controller("BeersController", ["$scope","rest","$timeout","$location","config","$route","save",require("./beersController")]).
 controller("BeerAddController",["$scope","config","$location","rest","save","$document","modalService",require("./beerAddController")]).
 controller("BeerUpdateController",["$scope","config","$location","rest","save","$document","modalService","$controller",require("./beerUpdateController")]).
-controller("BeerShowController",["$scope","config","$location","rest",require("./beerShowController")]);
+controller("BeerShowController",["$scope","config","$location","rest", "$document",require("./beerShowController")]);
 module.exports=angular.module("BeersApp").name;
 },{"./beerAddController":7,"./beerShowController":8,"./beerUpdateController":9,"./beersController":10}],12:[function(require,module,exports){
 module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
@@ -617,7 +617,7 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 	}
 };
 },{}],15:[function(require,module,exports){
-module.exports=function($scope,config,$location,rest, modalService) {
+module.exports=function($scope,config,$location,rest, modalService, $document) {
 	$scope.data = {};
 	
 	if(angular.isUndefined(config.activeBrewery)){
@@ -646,9 +646,13 @@ module.exports=function($scope,config,$location,rest, modalService) {
 		var listShowBeers = "";
 		var title = "Liste des bières";
 		for(i = 0 ; i<$scope.countBeers() ; i++){
-			listShowBeers = listShowBeers + "<p>" + $scope.data[what][i].name + "</p><hr/>";
+			listShowBeers = listShowBeers + "<p class='form-control'>"+ $scope.data[what][i].name +"</p>";
 		}
-		modalService.showModal(title, listShowBeers, undefined);
+		modalService.showModal(title, listShowBeers, function(value){
+			if(value=="Enregistrer et continuer" || value == "Continuer"){
+				
+			}
+		});
 	}
 }
 },{}],16:[function(require,module,exports){
