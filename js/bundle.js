@@ -202,7 +202,6 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 	});
 	
 	$scope.update=function(beer,force,callback){
-		console.log('update action');
 		if($scope._update(beer,force,callback)==true){
 			$location.path("beers");
 		}
@@ -691,6 +690,7 @@ module.exports=function($scope,config,$location){
 		if($scope.frmConfig.$dirty){
 			config.server=$scope.config.server;
 			config.breweries=$scope.config.breweries;
+			config.beers=$scope.config.beers;
 		}
 		$location.path("/");
 	};

@@ -28,7 +28,6 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 	});
 	
 	$scope.update=function(beer,force,callback){
-		console.log('update action');
 		if($scope._update(beer,force,callback)==true){
 			$location.path("beers");
 		}

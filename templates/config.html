@@ -1,8 +1,14 @@
 	<form name="frmConfig" data-ng-submit="frmConfig.$valid && update()" novalidate data-ng-init="setFormScope(this)">
+	<table class="table">
+	<tr>
+		<td colspan="2"><h2><span class="fa fa-cog"></span> Breweries</h2></td>
+	</tr>
+<!-- 		Breweries ================================================================== -->
+	<tr>
+	<td>
 		<fieldset>
 			<legend>Rafraîchissements</legend>
 			<div class="form-group">
-				<label for="name">Breweries</label>
 					<div class="radio">
 						<label>
 							<input type="radio" name="breweriesRefresh" value="all" data-ng-model="config.breweries.refresh">
@@ -17,11 +23,11 @@
 				</div>
 			</div>
 		</fieldset>
-
+	</td>
+	<td>
 		<fieldset>
 			<legend>Mise à jour</legend>
 			<div class="form-group">
-				<label for="name">Breweries</label>
 					<div class="radio">
 						<label>
 							<input type="radio" name="breweriesUpdate" value="immediate" data-ng-model="config.breweries.update">
@@ -36,9 +42,56 @@
 				</div>
 			</div>
 		</fieldset>
-
+	</td>
+	</tr>
+	<tr>
+		<td colspan="2"><h2><span class="fa fa-cog"></span> Beers</h2></td>
+	</tr>
+<!-- 		Beers ================================================================== -->
+	<tr>
+	<td>
 		<fieldset>
-			<legend>Paramétres d'accès au serveur distant</legend>
+			<legend>Rafraîchissements</legend>
+			<div class="form-group">
+					<div class="radio">
+						<label>
+							<input type="radio" name="beersRefresh" value="all" data-ng-model="config.beers.refresh">
+							Recharger à chaque affichage
+						</label>
+					</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="beersRefresh" id="beersRefresh2" value="ask" data-ng-model="config.beers.refresh">
+						A la demande
+					</label>
+				</div>
+			</div>
+		</fieldset>
+	</td>
+	<td>
+		<fieldset>
+			<legend>Mise à jour</legend>
+			<div class="form-group">
+					<div class="radio">
+						<label>
+							<input type="radio" name="beersUpdate" value="immediate" data-ng-model="config.beers.update">
+							Immédiate
+						</label>
+					</div>
+				<div class="radio">
+					<label>
+						<input type="radio" name="beersUpdate" id="beersUpdate2" value="deffered" data-ng-model="config.beers.update">
+						A la demande
+					</label>
+				</div>
+			</div>
+		</fieldset>
+	</td>
+	</tr>
+		</table>
+<!-- 		Server ================================================================== -->
+		<fieldset>
+			<legend>Paramètres d'accès au serveur distant</legend>
 			<div class="form-group">
 				<label for="url">URL</label>
 				<input class="form-control" type="url" placeholder="Entrez une url" id="url" name="url" data-ng-model="config.server.restServerUrl">
@@ -55,5 +108,5 @@
 			</div>
 		</fieldset>
 		<button type="submit" class="btn btn-default">Sauvegarder les modifications</button>
-		&nbsp;<a href="breweries" class="btn btn-default" data-ng-click="cancel()">Annuler</a>
+		&nbsp;<a href="home" class="btn btn-default" data-ng-click="cancel()">Annuler</a>
 	</form>
