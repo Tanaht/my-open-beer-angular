@@ -173,7 +173,59 @@ run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $
 
 },{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":10,"./breweries/breweriesModule":12,"./config":15,"./config/configFactory":17,"./config/configModule":18,"./mainController":19,"./save/saveController":20,"./services/rest":21,"./services/save":22}],7:[function(require,module,exports){
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
+	$scope.data={};
+	$scope.data["beers"]=config.beers.all;
+	var self=this;
+	var selfScope=$scope;
+	$scope.setFormScope=function(form){
+		$scope.frmBeer=form;
+	};
+	var onRouteChangeOff=$scope.$on('$locationChangeStart', function routeChange(event, newUrl, oldUrl) {
+		if (!$scope.frmBeer || !$scope.frmBeer.$dirty || $scope.exit) return;
+
+		var alert = modalService.showModal("Sortie","<b>Attention</b>, si vous continuez, vous perdez les modifications en cours.<br>Enregistrer avant sortie ?",function(value){
+				selfScope.exit=true;
+				if(value=="Enregistrer et continuer"){
+					onRouteChangeOff();
+					if(selfScope._update()==true){
+						$location.path(newUrl.substring($location.absUrl().length - $location.url().length));
+					}
+				}else if(value=="Continuer"){
+					console.log(value);
+					onRouteChangeOff();
+					$location.path(newUrl.substring($location.absUrl().length - $location.url().length));
+				}
+			}
+		);
+		event.preventDefault();
+		return;
+	});
 	
+	$scope.update=function(beer,force,callback){
+		console.log('update action');
+		if($scope._update(beer,force,callback)==true){
+			$location.path("beers");
+		}
+	};
+	$scope._update=function(beer,force,callback){
+		var result=false;
+		if(angular.isUndefined(beer)){
+			beer=$scope.activeBeer;
+		}
+		$scope.data.posted={
+			"name" : beer.name,
+			"desc"  : beer.desc
+		};
+		$scope.data.beers.push(beer);
+		beer.created_at=new Date();
+		if(config.beers.update==="immediate" || force){
+			rest.post($scope.data,"beers",beer.name,callback);
+		}else{
+			save.addOperation("New",$scope.update,beer);
+			result=true;
+		}
+		return result;
+	}
 }
 },{}],8:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService, $controller) {
@@ -482,7 +534,6 @@ controller("BreweryUpdateController",["$scope","config","$location","rest","save
 module.exports=angular.module("BreweriesApp").name;
 },{"./breweriesController":11,"./breweryAddController":13,"./breweryUpdateController":14}],13:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService) {
-	
 	$scope.data={};
 	$scope.data["breweries"]=config.breweries.all;
 	var self=this;
