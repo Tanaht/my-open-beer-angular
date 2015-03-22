@@ -1,4 +1,4 @@
-module.exports=function($http,$resource,$location, config, rest) {
+module.exports=function($resource,$location, config, rest) {
 	var selfConfig = config;
 	var self = this;
 	this.information = {//objet qui contient l'information d'un utilisateur

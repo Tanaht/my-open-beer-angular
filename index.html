@@ -33,22 +33,31 @@
 			<div class="collapse navbar-collapse">
 				<form class="navbar-form navbar-right" ng-show="user.setting">
 		        	<div class="input-group">
-						<span class="input-group-addon">mail:</span>
+						<span style="color:red;" class="input-group-addon" ng-click="user.setting = false">X</span>
+						<span class="input-group-addon">Mail: </span>
 						<input ng-model="tempMail" type="text" class="form-control" placeholder="your mail here...">
 					</div>
 					<div class="input-group">
-						<span class="input-group-addon">password:</span>
+						<span class="input-group-addon">Password: </span>
 						<input ng-model="user.password" type="password" class="form-control">
 					</div>
 		        	<button class="btn btn-default" ng-click="userConnect()">Se connecter</button>
 		      	</form>
 			    <ul class="nav navbar-nav navbar-right">
 			        <li><a>{{user.mail}}</a></li>
-			        <li><a class="btn btn-default" ng-click="user.connected ? userDeconnect() : user.setting == false ? user.setting = true : user.setting = false">{{user.connected ? "Déconnexion" : "Connexion"}}</a></li>
+			        <li><a class="btn btn-default" ng-click="user.connected == true ? userDeconnect() : user.setting == false ? user.setting = true : user.setting = false">{{user.connected == true ? "Déconnexion" : "Connexion"}}</a></li>
 			    </ul>
 			</div>
 		</div>
 	</nav>
+	<div class="bs-docs-header">
+		<div class="container">
+			<div class="header">
+				<h1>Open Beer Database</h1>
+				<p>A free, public database and API for beer information.</p>
+			</div>
+		</div>
+	</div>
 	<div class="container">
 		<ol class="breadcrumb">
 				<li><a href="home"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>

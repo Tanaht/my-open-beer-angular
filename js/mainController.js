@@ -1,21 +1,21 @@
-module.exports=function($scope,$location,save,$window, config, user) {
+module.exports=function($scope,$location,save,$window, config, user, $rootScope) {
 	$scope.user = angular.copy(user.information);
 	$scope.tempMail = "";//variable temporaire contenant le mail entrée par l'utilisateur
 
 	$scope.userConnect = function(){
 		//on assigne le mail et le password dans le service user
+		console.log("connection");
 		user.information.posted.mail = $scope.tempMail;
 		user.information.posted.password = $scope.user.password;
 		user.getToken();//on récupère le token;
-		console.log(user);
-		$scope.user = user.information;//on met a jour les données du controller 
-		console.log($scope.user);
+		$scope.user = user.information;//on met a jour les données du controller
+		$location.path("/");
 	};
-
 	$scope.userDeconnect = function(){
 		user.deconnect();
 		$scope.tempMail = "";
 		$scope.user = user.information;
+		$location.path("/");
 	};
 
 	$scope.hasOperations=function(){

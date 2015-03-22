@@ -1,4 +1,8 @@
 module.exports=function($scope,config,$location,rest,save,$document,modalService) {
+	if(config.server.privateToken == ""){
+		$location.path("401");
+	}
+
 	$scope.data={};
 	$scope.data["breweries"]=config.breweries.all;
 	var self=this;

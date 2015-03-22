@@ -138,10 +138,10 @@ module.exports=function(){
 };
 },{}],6:[function(require,module,exports){
 angular.module("mainApp",["ngRoute","ngResource","ngAnimate",require("./breweries/breweriesModule"), require('./beers/beersModule'),require("./config/configModule")]).
-controller("MainController", ["$scope","$location","save","$window", "config", "user",require("./mainController")]).
+controller("MainController", ["$scope","$location","save","$window", "config", "user", "$rootScope",require("./mainController")]).
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
-service("user", ["$http","$resource","$location","config","rest",require("./services/user")]).
+service("user", ["$resource","$location","config","rest",require("./services/user")]).
 service("save", ["rest","config","$route",require("./services/save")]).
 config(["$routeProvider","$locationProvider","$httpProvider",require("./route")]).
 filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
@@ -174,6 +174,10 @@ run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $
 
 },{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":11,"./breweries/breweriesModule":13,"./config/configFactory":18,"./config/configModule":19,"./mainController":20,"./route":21,"./save/saveController":22,"./services/rest":23,"./services/save":24,"./services/user":25}],7:[function(require,module,exports){
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
+	if(config.server.privateToken == ""){
+		$location.path("401");
+	}
+	
 	$scope.data={};
 	$scope.localData = {};//data à ne pas mettre a jour
 	$scope.data["beers"]=config.beers.all;
@@ -261,7 +265,10 @@ module.exports=function($scope,config,$location,rest, modalService) {
 },{}],9:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService, $controller) {
 	$controller('BeerAddController', {$scope: $scope});
-
+	
+	if(config.server.privateToken == ""){
+		$location.path("401");
+	}
 	if(angular.isUndefined(config.activeBeer)){
 		$location.path("beers/");
 	}
@@ -590,6 +597,10 @@ controller("BreweryShowController", ["$scope","config","$location","rest", "moda
 module.exports=angular.module("BreweriesApp").name;
 },{"./breweriesController":12,"./breweryAddController":14,"./breweryShowController":15,"./breweryUpdateController":16}],14:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService) {
+	if(config.server.privateToken == ""){
+		$location.path("401");
+	}
+
 	$scope.data={};
 	$scope.data["breweries"]=config.breweries.all;
 	var self=this;
@@ -679,6 +690,10 @@ module.exports=function($scope,config,$location,rest, modalService, $document) {
 }
 },{}],16:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService, $controller){
+	if(config.server.privateToken == ""){
+		$location.path("401");
+	}
+
 	$controller('BreweryAddController', {$scope: $scope});
 
 	if(angular.isUndefined(config.activeBrewery)){
@@ -758,24 +773,24 @@ var configApp=angular.module("ConfigApp", []).
 controller("ConfigController", ["$scope","config","$location",require("./configController")]);
 module.exports=configApp.name;
 },{"./configController":17}],20:[function(require,module,exports){
-module.exports=function($scope,$location,save,$window, config, user) {
+module.exports=function($scope,$location,save,$window, config, user, $rootScope) {
 	$scope.user = angular.copy(user.information);
 	$scope.tempMail = "";//variable temporaire contenant le mail entrée par l'utilisateur
 
 	$scope.userConnect = function(){
 		//on assigne le mail et le password dans le service user
+		console.log("connection");
 		user.information.posted.mail = $scope.tempMail;
 		user.information.posted.password = $scope.user.password;
 		user.getToken();//on récupère le token;
-		console.log(user);
-		$scope.user = user.information;//on met a jour les données du controller 
-		console.log($scope.user);
+		$scope.user = user.information;//on met a jour les données du controller
+		$location.path("/");
 	};
-
 	$scope.userDeconnect = function(){
 		user.deconnect();
 		$scope.tempMail = "";
 		$scope.user = user.information;
+		$location.path("/");
 	};
 
 	$scope.hasOperations=function(){
@@ -847,6 +862,8 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 		controller: 'BeerShowController'
 	}).when('/404', {
 		templateUrl: 'templates/error/error404.html'
+	}).when('/401', {
+		templateUrl: 'templates/error/error401.html'
 	}).otherwise({
 		redirectTo: '/404'
 	});
@@ -916,12 +933,10 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		});
 		request.success(function(data, status, headers, config) {
 			response[what]=data;
-			console.log("success: " + what);
 			restConfig[what].all=data;
 			response.load=false;
 		}).
 		error(function(data, status, headers, config) {
-			console.log("error: " + what);
 			self.addMessage({type: "danger", content: "Erreur de connexion au serveur, statut de la réponse : "+status});
 			console.log("Erreur de connexion au serveur, statut de la réponse : "+status);
 		});
@@ -1063,7 +1078,7 @@ module.exports=function(rest,config,$route){
 	}
 };
 },{}],25:[function(require,module,exports){
-module.exports=function($http,$resource,$location, config, rest) {
+module.exports=function($resource,$location, config, rest) {
 	var selfConfig = config;
 	var self = this;
 	this.information = {//objet qui contient l'information d'un utilisateur

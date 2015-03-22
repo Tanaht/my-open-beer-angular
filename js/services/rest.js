@@ -19,12 +19,10 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		});
 		request.success(function(data, status, headers, config) {
 			response[what]=data;
-			console.log("success: " + what);
 			restConfig[what].all=data;
 			response.load=false;
 		}).
 		error(function(data, status, headers, config) {
-			console.log("error: " + what);
 			self.addMessage({type: "danger", content: "Erreur de connexion au serveur, statut de la réponse : "+status});
 			console.log("Erreur de connexion au serveur, statut de la réponse : "+status);
 		});

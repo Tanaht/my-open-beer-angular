@@ -46,6 +46,8 @@ module.exports=function($routeProvider,$locationProvider,$httpProvider) {
 		controller: 'BeerShowController'
 	}).when('/404', {
 		templateUrl: 'templates/error/error404.html'
+	}).when('/401', {
+		templateUrl: 'templates/error/error401.html'
 	}).otherwise({
 		redirectTo: '/404'
 	});
