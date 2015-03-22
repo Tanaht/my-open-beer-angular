@@ -141,7 +141,7 @@ angular.module("mainApp",["ngRoute","ngResource","ngAnimate",require("./brewerie
 controller("MainController", ["$scope","$location","save","$window", "config", "user",require("./mainController")]).
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
-service("user", ["$http","$resource","$location","config","$sce",require("./services/user")]).
+service("user", ["$http","$resource","$location","config","rest",require("./services/user")]).
 service("save", ["rest","config","$route",require("./services/save")]).
 config(["$routeProvider","$locationProvider","$httpProvider",require("./route")]).
 filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
@@ -750,7 +750,7 @@ module.exports=function() {
 	factory.beers.update="immediate";//deffered|immediate
 	factory.server.privateToken="";
 	factory.server.restServerUrl="http://127.0.0.1/dev/rest-open-beer/";
-	factory.server.force=true;
+	factory.server.force=false;
 	return factory;
 };
 },{}],19:[function(require,module,exports){
@@ -759,29 +759,25 @@ controller("ConfigController", ["$scope","config","$location",require("./configC
 module.exports=configApp.name;
 },{"./configController":17}],20:[function(require,module,exports){
 module.exports=function($scope,$location,save,$window, config, user) {
-	$scope.user = {
-		connected : user.connexion,
-		mail : "non connecté",
-		password: "",
-		setting : false
-	};
-
-	$scope.tempMail = "";
-
-	if(user.connexion){
-		$scope.user.mail = user.information.mail;
-	}
+	$scope.user = angular.copy(user.information);
+	$scope.tempMail = "";//variable temporaire contenant le mail entrée par l'utilisateur
 
 	$scope.userConnect = function(){
-		$scope.user.mail = $scope.tempMail;
-		user.information.connexion = true;
-		$scope.user.connected = true;
-		$scope.user.setting = false;
-	}
+		//on assigne le mail et le password dans le service user
+		user.information.posted.mail = $scope.tempMail;
+		user.information.posted.password = $scope.user.password;
+		user.getToken();//on récupère le token;
+		console.log(user);
+		$scope.user = user.information;//on met a jour les données du controller 
+		console.log($scope.user);
+	};
 
 	$scope.userDeconnect = function(){
-		console.log('déconnexion');
-	}
+		user.deconnect();
+		$scope.tempMail = "";
+		$scope.user = user.information;
+	};
+
 	$scope.hasOperations=function(){
 		return save.operations.length>0;
 	};
@@ -932,7 +928,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.post=function(response,what,name,callback){
-		console.log("post processed");
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -945,7 +940,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		    headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
-			console.log("post success");
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);
@@ -953,8 +947,6 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 				callback();
 			}
 		}).error(function(data, status, headers, config){
-			console.log("error");
-			console.log(config);
 			self.addMessage({type: "warning", content:"Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"+data.message});
 		});
 	};
@@ -1008,6 +1000,24 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	this.clearMessages=function(){
 		self.messages.length=0;
 	};
+
+	this.connect=function(response,callback){
+		var request = $http({
+		    method: "POST",
+		    url: restConfig.server.restServerUrl+"user/connect",
+		    data: $.param(response.posted),
+		    headers: self.headers
+		});
+		request.success(function(data, status, headers, config) {
+			response["receive"] = data;
+			if(angular.isDefined(callback)){
+				callback();
+			}
+		
+		}).error(function(data, status, headers, config){
+			self.addMessage({type: "warning", content: "Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"});
+		});
+	};
 };
 },{}],24:[function(require,module,exports){
 module.exports=function(rest,config,$route){
@@ -1053,11 +1063,50 @@ module.exports=function(rest,config,$route){
 	}
 };
 },{}],25:[function(require,module,exports){
-module.exports=function($http,$resource,$location, config) {
-	this.connexion = false;
-	this.information = {};
-	this.getToken = function(){
+module.exports=function($http,$resource,$location, config, rest) {
+	var selfConfig = config;
+	var self = this;
+	this.information = {//objet qui contient l'information d'un utilisateur
+		setting:false,
+		connected : "false",
+		mail:"Non Connecté",
+		password : "",
+		token : "",
+		posted:{
+			mail:"",
+			password:"",
+		}
 	};
+	var data = {};
+	this.getToken = function(){
+		rest.connect(this.information, function(){
+			if(self.information.receive.connected){
+				console.log("Connected to database with success");
+
+				self.information.token = self.information.receive.token;
+				selfConfig.server.privateToken = self.information.receive.token;
+				self.information.connected = self.information.receive.connected;
+
+				self.information.mail = self.information.posted.mail;
+				self.information.password = self.information.posted.password;
+				self.information.setting = false;
+			}
+			else{
+				console.log("Connected to database failed");
+			}
+		});
+	};
+	this.deconnect = function(){
+		this.information.connected = false;
+		this.information.mail = "Non Connecté";
+		this.information.password = "";
+		this.information.token = "";
+		this.information.posted.mail = "";
+		this.information.posted.password = "";
+		this.information.receive.token = "";
+		this.information.receive.connected = false;
+		config.server.privateToken = "";
+	}
 
 };
 },{}]},{},[6]);

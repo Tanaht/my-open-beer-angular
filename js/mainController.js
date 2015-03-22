@@ -1,27 +1,23 @@
 module.exports=function($scope,$location,save,$window, config, user) {
-	$scope.user = {
-		connected : user.connexion,
-		mail : "non connecté",
-		password: "",
-		setting : false
-	};
-
-	$scope.tempMail = "";
-
-	if(user.connexion){
-		$scope.user.mail = user.information.mail;
-	}
+	$scope.user = angular.copy(user.information);
+	$scope.tempMail = "";//variable temporaire contenant le mail entrée par l'utilisateur
 
 	$scope.userConnect = function(){
-		$scope.user.mail = $scope.tempMail;
-		user.information.connexion = true;
-		$scope.user.connected = true;
-		$scope.user.setting = false;
-	}
+		//on assigne le mail et le password dans le service user
+		user.information.posted.mail = $scope.tempMail;
+		user.information.posted.password = $scope.user.password;
+		user.getToken();//on récupère le token;
+		console.log(user);
+		$scope.user = user.information;//on met a jour les données du controller 
+		console.log($scope.user);
+	};
 
 	$scope.userDeconnect = function(){
-		console.log('déconnexion');
-	}
+		user.deconnect();
+		$scope.tempMail = "";
+		$scope.user = user.information;
+	};
+
 	$scope.hasOperations=function(){
 		return save.operations.length>0;
 	};
