@@ -31,6 +31,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.post=function(response,what,name,callback){
+		console.log("post processed");
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -43,6 +44,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		    headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
+			console.log("post success");
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);
@@ -50,6 +52,8 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 				callback();
 			}
 		}).error(function(data, status, headers, config){
+			console.log("error");
+			console.log(config);
 			self.addMessage({type: "warning", content:"Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"+data.message});
 		});
 	};

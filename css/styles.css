@@ -27,7 +27,7 @@ body{
     background-color: rgb(220,204,166);
     border: 0px none rgb(205, 191, 227);
     font: normal normal normal normal 24px/34.2857170104981px 'Segoe UI', Frutiger, 'Frutiger Linotype', 'Dejavu Sans', 'Helvetica Neue', Arial, sans-serif;
-    margin: 0px 0px 10px;
+    margin: 0px 0px 10px 0px;
     outline: rgb(205, 191, 227) none 0px;
     padding: 0px 15px;
 }
@@ -76,4 +76,9 @@ p.well{
     border: 1px solid #dfd7ca;
     border-radius: 4px;
     background-color: white;
+}
+
+div.login {
+    text-align: left;
+    margin-top: 20px;
 }

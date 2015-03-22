@@ -141,6 +141,7 @@ angular.module("mainApp",["ngRoute","ngResource","ngAnimate",require("./brewerie
 controller("MainController", ["$scope","$location","save","$window",require("./mainController")]).
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
+service("user", ["$http","$resource","$location","config","$sce",require("./services/user")]).
 service("save", ["rest","config","$route",require("./services/save")]).
 config(["$routeProvider","$locationProvider","$httpProvider",require("./route")]).
 filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
@@ -171,7 +172,7 @@ run(['$rootScope','$location', '$routeParams', function($rootScope, $location, $
 }]
 ).factory("config", require("./config/configFactory"));
 
-},{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":11,"./breweries/breweriesModule":13,"./config/configFactory":18,"./config/configModule":19,"./mainController":20,"./route":21,"./save/saveController":22,"./services/rest":23,"./services/save":24}],7:[function(require,module,exports){
+},{"./addons/drag":1,"./addons/modal":2,"./addons/modalService":3,"./addons/notDeletedFilter":4,"./addons/sortBy":5,"./beers/beersModule":11,"./breweries/breweriesModule":13,"./config/configFactory":18,"./config/configModule":19,"./mainController":20,"./route":21,"./save/saveController":22,"./services/rest":23,"./services/save":24,"./services/user":25}],7:[function(require,module,exports){
 module.exports = function($scope,config,$location,rest,save,$document,modalService) {
 	$scope.data={};
 	$scope.localData = {};//data à ne pas mettre a jour
@@ -717,10 +718,18 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 	}
 };
 },{}],17:[function(require,module,exports){
-module.exports=function($scope,config,$location){
+module.exports=function($scope,config,$location, rest){
 
 	$scope.config=angular.copy(config);
+	var connection = {
+		mail : "admin@local.fr",
+		password : "68CmvlwzY8u4k"
+	};
+
+	$scope.token = {};
 	
+	rest.post($scope.token, "user/connect", connection, function(){});
+
 	$scope.setFormScope=function(form){
 		$scope.frmConfig=form;
 	};
@@ -755,7 +764,7 @@ module.exports=function() {
 };
 },{}],19:[function(require,module,exports){
 var configApp=angular.module("ConfigApp", []).
-controller("ConfigController", ["$scope","config","$location",require("./configController")]);
+controller("ConfigController", ["$scope","config","$location", "rest" ,require("./configController")]);
 module.exports=configApp.name;
 },{"./configController":17}],20:[function(require,module,exports){
 module.exports=function($scope,$location,save,$window) {
@@ -910,6 +919,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 	};
 	
 	this.post=function(response,what,name,callback){
+		console.log("post processed");
 		if(angular.isUndefined(callback))
 			this.clearMessages();
 		$http.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded";
@@ -922,6 +932,7 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		    headers: self.headers
 		});
 		request.success(function(data, status, headers, config) {
+			console.log("post success");
 			self.addMessage(data.message);
 			if(angular.isUndefined(callback)){
 				$location.path("/"+what);
@@ -929,6 +940,8 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 				callback();
 			}
 		}).error(function(data, status, headers, config){
+			console.log("error");
+			console.log(config);
 			self.addMessage({type: "warning", content:"Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"+data.message});
 		});
 	};
@@ -1025,5 +1038,8 @@ module.exports=function(rest,config,$route){
 			$route.reload();
 		}
 	}
+};
+},{}],25:[function(require,module,exports){
+module.exports=function($http,$resource,$location,restConfig,$sce) {
 };
 },{}]},{},[6]);

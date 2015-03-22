@@ -2,6 +2,7 @@ angular.module("mainApp",["ngRoute","ngResource","ngAnimate",require("./brewerie
 controller("MainController", ["$scope","$location","save","$window",require("./mainController")]).
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
+service("user", ["$http","$resource","$location","config","$sce",require("./services/user")]).
 service("save", ["rest","config","$route",require("./services/save")]).
 config(["$routeProvider","$locationProvider","$httpProvider",require("./route")]).
 filter("NotDeletedFilter",require("./addons/notDeletedFilter")).
