@@ -234,29 +234,11 @@ module.exports = function($scope,config,$location,rest,save,$document,modalServi
 },{}],8:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest, modalService) {
 	$scope.data = {};
-	if(angular.isUndefined(config.activeBeer)){
+	/*if(angular.isUndefined(config.activeBeer)){
 		$location.path("beers/");
-	};
+	};*/
 
 	$scope.activeBeer=config.activeBeer;
-
-	var what = "breweries/" + config.activeBeer.idBrewery;
-	rest.getAll($scope.data, what);
-
-	$scope.showBeers = function(){
-		$location.path("beers/");
-	};
-
-	$scope.showBreweryName = function(){
-		return $scope.data[what].name; 
-	}
-
-	$scope.showBrewery = function(){
-		if(angular.isDefined($scope.data[what]))
-		config.activeBrewery=angular.copy($scope.data[what]);
-		config.activeBrewery.reference=$scope.data[what];
-		$location.path("breweries/detail");
-	}
 };
 },{}],9:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest,save,$document,modalService, $controller) {
@@ -390,14 +372,6 @@ module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
 		config.activeBeer=angular.copy($scope.activeBeer);
 		config.activeBeer.reference=$scope.activeBeer;
 		$location.path("beers/update");
-	}
-
-	$scope.show=function(beer){
-		if(angular.isDefined(beer))
-			$scope.activeBeer=beer;
-		config.activeBeer=angular.copy($scope.activeBeer);
-		config.activeBeer.reference=$scope.activeBeer;
-		$location.path("beers/detail");
 	}
 	
 	$scope.update=function(beer,force,callback){
@@ -646,6 +620,7 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 },{}],15:[function(require,module,exports){
 module.exports=function($scope,config,$location,rest, modalService, $document) {
 	$scope.data = {};
+	
 	if(angular.isUndefined(config.activeBrewery)){
 		$location.path("breweries/");
 	};
@@ -674,7 +649,11 @@ module.exports=function($scope,config,$location,rest, modalService, $document) {
 		for(i = 0 ; i<$scope.countBeers() ; i++){
 			listShowBeers = listShowBeers + "<p class='form-control'>"+ $scope.data[what][i].name +"</p>";
 		}
-		modalService.showModal(title, listShowBeers, undefined);
+		modalService.showModal(title, listShowBeers, function(value){
+			if(value=="Enregistrer et continuer" || value == "Continuer"){
+				
+			}
+		});
 	}
 }
 },{}],16:[function(require,module,exports){

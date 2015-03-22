@@ -70,6 +70,7 @@ tr.active{
 
 textarea.form-control{
     height: 150px;
+<<<<<<< HEAD
 }
 
 p.well{
@@ -81,4 +82,6 @@ p.well{
 div.login {
     text-align: left;
     margin-top: 20px;
+=======
+>>>>>>> parent of cdbe901... IHM beers/detail finished
 }
