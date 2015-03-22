@@ -1,5 +1,27 @@
-module.exports=function($scope,$location,save,$window) {
-	
+module.exports=function($scope,$location,save,$window, config, user) {
+	$scope.user = {
+		connected : user.connexion,
+		mail : "non connecté",
+		password: "",
+		setting : false
+	};
+
+	$scope.tempMail = "";
+
+	if(user.connexion){
+		$scope.user.mail = user.information.mail;
+	}
+
+	$scope.userConnect = function(){
+		$scope.user.mail = $scope.tempMail;
+		user.information.connexion = true;
+		$scope.user.connected = true;
+		$scope.user.setting = false;
+	}
+
+	$scope.userDeconnect = function(){
+		console.log('déconnexion');
+	}
 	$scope.hasOperations=function(){
 		return save.operations.length>0;
 	};

@@ -1,17 +1,6 @@
-module.exports=function($scope,config,$location, rest){
+module.exports=function($scope,config,$location){
 
 	$scope.config=angular.copy(config);
-	var connection = {
-		mail : "admin@local.fr",
-		password : "68CmvlwzY8u4k"
-	};
-
-	$scope.token = {};
-	
-	rest.post($scope.token, "user/connect", connection, function(){
-		console.log("success callback");
-	});
-
 	$scope.setFormScope=function(form){
 		$scope.frmConfig=form;
 	};

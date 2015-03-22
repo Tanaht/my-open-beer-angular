@@ -138,7 +138,7 @@ module.exports=function(){
 };
 },{}],6:[function(require,module,exports){
 angular.module("mainApp",["ngRoute","ngResource","ngAnimate",require("./breweries/breweriesModule"), require('./beers/beersModule'),require("./config/configModule")]).
-controller("MainController", ["$scope","$location","save","$window",require("./mainController")]).
+controller("MainController", ["$scope","$location","save","$window", "config", "user",require("./mainController")]).
 controller("SaveController", ["$scope","$location","save",require("./save/saveController")]).
 service("rest", ["$http","$resource","$location","config","$sce",require("./services/rest")]).
 service("user", ["$http","$resource","$location","config","$sce",require("./services/user")]).
@@ -718,18 +718,9 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 	}
 };
 },{}],17:[function(require,module,exports){
-module.exports=function($scope,config,$location, rest){
+module.exports=function($scope,config,$location){
 
 	$scope.config=angular.copy(config);
-	var connection = {
-		mail : "admin@local.fr",
-		password : "68CmvlwzY8u4k"
-	};
-
-	$scope.token = {};
-	
-	rest.post($scope.token, "user/connect", connection, function(){});
-
 	$scope.setFormScope=function(form){
 		$scope.frmConfig=form;
 	};
@@ -764,11 +755,33 @@ module.exports=function() {
 };
 },{}],19:[function(require,module,exports){
 var configApp=angular.module("ConfigApp", []).
-controller("ConfigController", ["$scope","config","$location", "rest" ,require("./configController")]);
+controller("ConfigController", ["$scope","config","$location",require("./configController")]);
 module.exports=configApp.name;
 },{"./configController":17}],20:[function(require,module,exports){
-module.exports=function($scope,$location,save,$window) {
-	
+module.exports=function($scope,$location,save,$window, config, user) {
+	$scope.user = {
+		connected : user.connexion,
+		mail : "non connecté",
+		password: "",
+		setting : false
+	};
+
+	$scope.tempMail = "";
+
+	if(user.connexion){
+		$scope.user.mail = user.information.mail;
+	}
+
+	$scope.userConnect = function(){
+		$scope.user.mail = $scope.tempMail;
+		user.information.connexion = true;
+		$scope.user.connected = true;
+		$scope.user.setting = false;
+	}
+
+	$scope.userDeconnect = function(){
+		console.log('déconnexion');
+	}
 	$scope.hasOperations=function(){
 		return save.operations.length>0;
 	};
@@ -1040,6 +1053,11 @@ module.exports=function(rest,config,$route){
 	}
 };
 },{}],25:[function(require,module,exports){
-module.exports=function($http,$resource,$location,restConfig,$sce) {
+module.exports=function($http,$resource,$location, config) {
+	this.connexion = false;
+	this.information = {};
+	this.getToken = function(){
+	};
+
 };
 },{}]},{},[6]);
