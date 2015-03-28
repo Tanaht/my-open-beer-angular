@@ -1,6 +1,6 @@
 module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
-	$scope.data={load:false};
-
+	$scope.data={load:false, beersByBrewery:[]};
+	$scope.byBrewers = false;
 	$scope.sortBy={field:"name",asc:false};
 	
 	$scope.messages=rest.messages;
@@ -12,7 +12,36 @@ module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
 	}else{
 		$scope.data["beers"]=config.beers.all;
 	}
+
 	$scope.allSelected=false;
+
+	$scope.showName = function(id){
+		var returnStatement = "test";
+		angular.forEach($scope.data["breweries"], function(value, key){
+			if(value.id == id)
+				returnStatement = value.name;
+		});
+		return returnStatement;
+	};
+
+	$scope.byBreweries = function(){
+		switch($scope.byBrewers){
+			case true:
+				$scope.byBrewers = false;
+			break;
+			case false:
+				$scope.byBrewers = true;
+				if(config.breweries.refresh==="all" || !config.breweries.loaded){
+					rest.getAll($scope.data, "breweries");
+					config.breweries.loaded=true;
+				}
+				angular.forEach($scope.data["beers"], function(value, key){
+					rest.getBeersByBrewery($scope.data["beersByBrewery"], value.idBrewery , "beers/brewery/" + value.idBrewery);
+					console.log($scope.data);
+				});
+			break;
+		}
+	};
 	
 	$scope.selectAll=function(){
 		angular.forEach($scope.data.beers, function(value, key) {

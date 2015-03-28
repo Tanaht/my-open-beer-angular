@@ -10,6 +10,9 @@
 	<div class="btn-group" role="group" aria-label="opération">
 		<a href="beers/new" class="btn btn-warning">Ajouter...</a>
 	</div>
+	<div class="btn-group" role="group" aria-label="Afficher par Brasserie">
+	<button class="btn btn-default" ng-click="byBreweries()"><span ng-hide="byBrewers" class="glyphicon glyphicon-unchecked"></span><span ng-show="byBrewers" class="glyphicon glyphicon-check"></span> Afficher par brasserie</button>
+	</div>
 	<div class="btn-group" role="group" aria-label="opération" data-ng-show="defferedUpdate()">
 		<a class="btn btn-default" data-ng-class="{'active': mustHideDeleted}" data-ng-click="hideDeleted()">Masquer les suppressions</a>
 	</div>
@@ -36,7 +39,7 @@
 		<p data-ng-repeat="message in messages| NotDeletedFilter as resultMessages" class="text-{{message.type}}" data-ng-show="readMessage(message)">{{message.content}}</p>
 	</div>
 </div>
-<table class="table table-striped table-condensed">
+<table class="table table-striped table-condensed" ng-hide="byBrewers">
 	<thead>
 		<tr>
 			<th><input type="checkbox" title="Sélectionner" data-ng-click="selectAll()" data-ng-model="allSelected"></th>
@@ -57,3 +60,19 @@
 		</tr>
 	</tbody>
 </table>
+<div ng-show="byBrewers">
+	<div class="panel panel-default" ng-repeat="beer in data.beers | NotDeletedFilter | orderBy:sortBy.field : sortBy.asc | filter:q as results track by $index" ng-init="">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">{{showName(beer.idBrewery)}}</div>
+
+	  <!-- Table -->
+	  <table class="table">
+	    <tr ng-repeat="beersByBrewery in data.beersByBrewery[beer.idBrewery]">
+			<td>{{beersByBrewery.id}}</td>
+			<td>{{beersByBrewery.name}}</td>
+			<td>{{beersByBrewery.description}}</td>
+			<td>{{beersByBrewery.updated_at | date:'dd/MM/yy HH:mm:ss'}}</td>
+	    </tr>
+	  </table>
+	</div>
+</div>

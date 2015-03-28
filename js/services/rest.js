@@ -119,4 +119,22 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 			self.addMessage({type: "warning", content: "Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"});
 		});
 	};
+
+	this.getBeersByBrewery=function(response, id, what){
+		var request = $http({
+			method: "GET",
+			url: restConfig.server.restServerUrl+what+this.getParams(),
+			headers: {'Accept': 'application/json'},
+			callback: 'JSON_CALLBACK'
+		});
+		request.success(function(data, status, headers, config) {
+			response[id]=data;
+			//restConfig[what].all=data;
+			response.load=true;
+		}).
+		error(function(data, status, headers, config) {
+			self.addMessage({type: "danger", content: "Erreur de connexion au serveur, statut de la réponse : "+status});
+			console.log("Erreur de connexion au serveur, statut de la réponse : "+status);
+		});
+	};
 };

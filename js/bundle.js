@@ -311,8 +311,8 @@ module.exports=function($scope,config,$location,rest,save,$document,modalService
 }
 },{}],10:[function(require,module,exports){
 module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
-	$scope.data={load:false};
-
+	$scope.data={load:false, beersByBrewery:[]};
+	$scope.byBrewers = false;
 	$scope.sortBy={field:"name",asc:false};
 	
 	$scope.messages=rest.messages;
@@ -324,7 +324,36 @@ module.exports=function($scope,rest,$timeout,$location,config,$route,save) {
 	}else{
 		$scope.data["beers"]=config.beers.all;
 	}
+
 	$scope.allSelected=false;
+
+	$scope.showName = function(id){
+		var returnStatement = "test";
+		angular.forEach($scope.data["breweries"], function(value, key){
+			if(value.id == id)
+				returnStatement = value.name;
+		});
+		return returnStatement;
+	};
+
+	$scope.byBreweries = function(){
+		switch($scope.byBrewers){
+			case true:
+				$scope.byBrewers = false;
+			break;
+			case false:
+				$scope.byBrewers = true;
+				if(config.breweries.refresh==="all" || !config.breweries.loaded){
+					rest.getAll($scope.data, "breweries");
+					config.breweries.loaded=true;
+				}
+				angular.forEach($scope.data["beers"], function(value, key){
+					rest.getBeersByBrewery($scope.data["beersByBrewery"], value.idBrewery , "beers/brewery/" + value.idBrewery);
+					console.log($scope.data);
+				});
+			break;
+		}
+	};
 	
 	$scope.selectAll=function(){
 		angular.forEach($scope.data.beers, function(value, key) {
@@ -1031,6 +1060,24 @@ module.exports=function($http,$resource,$location,restConfig,$sce) {
 		
 		}).error(function(data, status, headers, config){
 			self.addMessage({type: "warning", content: "Erreur de connexion au serveur, statut de la réponse : "+status+"<br>"});
+		});
+	};
+
+	this.getBeersByBrewery=function(response, id, what){
+		var request = $http({
+			method: "GET",
+			url: restConfig.server.restServerUrl+what+this.getParams(),
+			headers: {'Accept': 'application/json'},
+			callback: 'JSON_CALLBACK'
+		});
+		request.success(function(data, status, headers, config) {
+			response[id]=data;
+			//restConfig[what].all=data;
+			response.load=true;
+		}).
+		error(function(data, status, headers, config) {
+			self.addMessage({type: "danger", content: "Erreur de connexion au serveur, statut de la réponse : "+status});
+			console.log("Erreur de connexion au serveur, statut de la réponse : "+status);
 		});
 	};
 };

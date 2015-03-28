@@ -40,6 +40,9 @@
 					<div class="input-group">
 						<span class="input-group-addon">Password: </span>
 						<input ng-model="user.password" type="password" class="form-control">
+						<span class="input-group-addon">
+				        	<input type="checkbox" aria-label="..."><label>Cookie</label>
+				      	</span>
 					</div>
 		        	<button class="btn btn-default" ng-click="userConnect()">Se connecter</button>
 		      	</form>
@@ -60,9 +63,9 @@
 	</div>
 	<div class="container">
 		<ol class="breadcrumb">
-				<li><a href="home"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
-				<li ng-repeat="page in paths"><a ng-href="{{page.href}}">&nbsp;{{page.caption}}</a></li>
-			</ol>
+			<li><a href="home"><span class="glyphicon glyphicon-home" aria-hidden="true"></span></a></li>
+			<li ng-repeat="page in paths"><a ng-href="{{page.href}}">&nbsp;{{page.caption}}</a></li>
+		</ol>
 	</div>
 	<div class="container">
 		<ng-view>
