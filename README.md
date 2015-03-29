@@ -3,7 +3,7 @@
 AngularJs project with API Rest access
 #Equipe
 Charpentier Antoine
-#Fonctionnalitées:
+#Fonctionnalités:
 - [x] navbar pour Connexion/Déconnexion
 - [x] Droits des utilisateurs (En mode non connecté droits de lecture uniquement)
 - [x] Page 404 et 401
