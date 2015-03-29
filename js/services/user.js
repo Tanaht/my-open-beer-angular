@@ -17,7 +17,6 @@ module.exports=function($resource,$location, config, rest) {
 		rest.connect(this.information, function(){
 			if(self.information.receive.connected){
 				console.log("Connected to database with success");
-
 				self.information.token = self.information.receive.token;
 				selfConfig.server.privateToken = self.information.receive.token;
 				self.information.connected = self.information.receive.connected;

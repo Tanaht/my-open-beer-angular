@@ -805,7 +805,7 @@ module.exports=configApp.name;
 module.exports=function($scope,$location,save,$window, config, user, $rootScope) {
 	$scope.user = angular.copy(user.information);
 	$scope.tempMail = "";//variable temporaire contenant le mail entrée par l'utilisateur
-
+	
 	$scope.userConnect = function(){
 		//on assigne le mail et le password dans le service user
 		console.log("connection");
@@ -1144,7 +1144,6 @@ module.exports=function($resource,$location, config, rest) {
 		rest.connect(this.information, function(){
 			if(self.information.receive.connected){
 				console.log("Connected to database with success");
-
 				self.information.token = self.information.receive.token;
 				selfConfig.server.privateToken = self.information.receive.token;
 				self.information.connected = self.information.receive.connected;
